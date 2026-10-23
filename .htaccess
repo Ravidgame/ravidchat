@@ -1,0 +1,30 @@
+# Ravidchat — تنظیمات امنیتی Apache
+DirectoryIndex index.php
+
+<IfModule mod_autoindex.c>
+    Options -Indexes
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    Header set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+</IfModule>
+
+# فایل‌های حساس از دسترسی مستقیم مسدود شوند
+<FilesMatch "^(config\.php|schema\.sql|deploy\.py|README\.md|\.env)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# پوشه‌ی includes فقط برای PHP قابل استفاده است، نه مرورگر
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^includes/ - [F,L]
+</IfModule>
